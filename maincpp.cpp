@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 
-class Car //Our Abstract base class
+class Car 
 {
 protected:
     std::string _str;
@@ -24,7 +24,7 @@ public:
     }
 };
 
-class OptionsDecorator : public Car //Decorator Base class
+class OptionsDecorator : public Car //Decorator temel sýnýfý
 {
 public:
     virtual std::string getDescription() = 0;
@@ -79,30 +79,6 @@ public:
     }
 };
 
-class PremiumSoundSystem : public OptionsDecorator
-{
-    Car* _b;
-public:
-    PremiumSoundSystem(Car* b)
-    {
-        _b = b;
-    }
-    std::string getDescription()
-    {
-        return _b->getDescription() + ", PremiumSoundSystem";
-    }
-
-    double getCost()
-    {
-        return 0.30 + _b->getCost();
-    }
-    ~PremiumSoundSystem()
-    {
-        std::cout << "~PremiumSoundSystem()\n";
-        delete _b;
-    }
-};
-
 class ManualTransmission : public OptionsDecorator
 {
     Car* _b;
@@ -129,22 +105,16 @@ public:
 
 int main()
 {
-    //Create our Car that we want to buy
+    //yeni araba yaratma
     Car* b = new CarModel1();
 
     std::cout << "Base model of " << b->getDescription() << " costs $" << b->getCost() << "\n";
 
-    //Who wants base model let's add some more features
 
     b = new Navigation(b);
     std::cout << b->getDescription() << " will cost you $" << b->getCost() << "\n";
-    b = new PremiumSoundSystem(b);
     b = new ManualTransmission(b);
     std::cout << b->getDescription() << " will cost you $" << b->getCost() << "\n";
-
-    // WARNING! Here we leak the CarModel1, Navigation and PremiumSoundSystem objects!
-    // Either we delete them explicitly or rewrite the Decorators to take 
-    // ownership and delete their Cars when destroyed.
     delete b;
 
     return 0;
